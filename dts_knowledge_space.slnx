@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="dts_knowledge_space.API/dts_knowledge_space.API.csproj" />
+  <Project Path="dts_knowledge_space.ViewModels/dts_knowledge_space.ViewModels.csproj" />
+  <Project Path="dts_knowledge_space.WebPortal/dts_knowledge_space.WebPortal.csproj" />
+</Solution>
