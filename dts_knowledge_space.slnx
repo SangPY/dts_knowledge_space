@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="dts_knowledge_space.API.UnitTest/dts_knowledge_space.API.UnitTest.csproj" Id="c4b8e2da-b299-42bb-8af2-bbe0a96cbfe3" />
   <Project Path="dts_knowledge_space.API/dts_knowledge_space.API.csproj" />
   <Project Path="dts_knowledge_space.ViewModels/dts_knowledge_space.ViewModels.csproj" />
   <Project Path="dts_knowledge_space.WebPortal/dts_knowledge_space.WebPortal.csproj" />

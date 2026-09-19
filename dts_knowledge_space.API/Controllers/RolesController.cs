@@ -38,10 +38,24 @@ namespace dts_knowledge_space.API.Controllers
             }
         }
 
+        //URL: GET: http://localhost:5001/api/roles/
+        [HttpGet]
+        public async Task<IActionResult> GetRoles()
+        {
+            var roles = await _roleManager.Roles.ToListAsync();
+
+            var rolevms = roles.Select(r => new RoleVm()
+            {
+                Id = r.Id,
+                Name = r.Name
+            });
+            return Ok(rolevms);
+        }
+
         //URL: GET: http://localhost:5001/api/roles/?filter={filter}&pageIndex=1&pageSize=10
         // Single endpoint that supports optional filtering and optional pagination.
         [HttpGet]
-        public async Task<IActionResult> GetRoles(string? filter = null, int? pageIndex = null, int? pageSize = null)
+        public async Task<IActionResult> GetRolesPaging(string? filter = null, int? pageIndex = null, int? pageSize = null)
         {
             var query = _roleManager.Roles.AsQueryable();
             if (!string.IsNullOrEmpty(filter))
@@ -52,16 +66,42 @@ namespace dts_knowledge_space.API.Controllers
             // If pagination params provided, return paginated result
             if (pageIndex.HasValue && pageSize.HasValue && pageIndex.Value > 0 && pageSize.Value > 0)
             {
-                var totalRecords = await query.CountAsync();
-                var items = await query
-                    .Skip((pageIndex.Value - 1) * pageSize.Value)
-                    .Take(pageSize.Value)
-                    .Select(r => new RoleVm()
-                    {
-                        Id = r.Id,
-                        Name = r.Name
-                    })
-                    .ToListAsync();
+                int totalRecords;
+                try
+                {
+                    totalRecords = await query.CountAsync();
+                }
+                catch (InvalidOperationException)
+                {
+                    // In unit tests the provider may not support IAsyncQueryProvider; fall back to synchronous execution.
+                    totalRecords = query.Count();
+                }
+
+                List<RoleVm> items;
+                try
+                {
+                    items = await query
+                        .Skip((pageIndex.Value - 1) * pageSize.Value)
+                        .Take(pageSize.Value)
+                        .Select(r => new RoleVm()
+                        {
+                            Id = r.Id,
+                            Name = r.Name
+                        })
+                        .ToListAsync();
+                }
+                catch (InvalidOperationException)
+                {
+                    items = query
+                        .Skip((pageIndex.Value - 1) * pageSize.Value)
+                        .Take(pageSize.Value)
+                        .Select(r => new RoleVm()
+                        {
+                            Id = r.Id,
+                            Name = r.Name
+                        })
+                        .ToList();
+                }
 
                 var pagination = new Pagination<RoleVm>
                 {
@@ -72,13 +112,27 @@ namespace dts_knowledge_space.API.Controllers
             }
 
             // Otherwise return full list
-            var roles = await query
-                .Select(r => new RoleVm()
-                {
-                    Id = r.Id,
-                    Name = r.Name
-                })
-                .ToListAsync();
+            List<RoleVm> roles;
+            try
+            {
+                roles = await query
+                    .Select(r => new RoleVm()
+                    {
+                        Id = r.Id,
+                        Name = r.Name
+                    })
+                    .ToListAsync();
+            }
+            catch (InvalidOperationException)
+            {
+                roles = query
+                    .Select(r => new RoleVm()
+                    {
+                        Id = r.Id,
+                        Name = r.Name
+                    })
+                    .ToList();
+            }
 
             return Ok(roles);
         }
