@@ -1,6 +1,8 @@
 using System;
 using dts_knowledge_space.API.Data;
 using dts_knowledge_space.API.Data.Entities;
+using dts_knowledge_space.ViewModels.Systems;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -40,6 +42,9 @@ builder.Services.AddIdentity<User, IdentityRole>()
 //builder.Services.AddTransient<DbInitializer>();
 
 builder.Services.AddControllers();
+//builder.Services.AddControllers()
+//             .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<RoleVmValidator>());
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -52,9 +52,10 @@ namespace dts_knowledge_space.API.Controllers
             return Ok(rolevms);
         }
 
-        //URL: GET: http://localhost:5001/api/roles/?filter={filter}&pageIndex=1&pageSize=10
+        //URL: GET: http://localhost:5001/api/roles/paging?filter={filter}&pageIndex=1&pageSize=10
         // Single endpoint that supports optional filtering and optional pagination.
-        [HttpGet]
+        // Use a distinct route to avoid conflicts with the parameterless GET action (GetRoles).
+        [HttpGet("paging")]
         public async Task<IActionResult> GetRolesPaging(string? filter = null, int? pageIndex = null, int? pageSize = null)
         {
             var query = _roleManager.Roles.AsQueryable();
